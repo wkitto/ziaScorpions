@@ -1,0 +1,94 @@
+---
+title: "zias data"
+author: "Math_116"
+date: "November 16, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(tigerstats)
+```
+
+## R Markdown
+
+
+```{r}
+scorps <- read.csv(file="Scorpion olfaction data Nov-2016.csv",header=TRUE)
+```
+
+### check independence under marble
+
+
+```{r}
+marble <- scorps[which(scorps$group=="marble"), ]
+chisq.test(marble$Odor.location,marble$Arm.selected)
+fisher.test(marble$Odor.location,marble$Arm.selected)
+contTable <- xtabs(~ Arm.selected + Odor.location, data = marble)
+barchart(contTable,
+    auto.key = list(
+        space = "top",
+        title = "Odor.location",
+        cex.title = 1,
+        columns = 1),
+    horizontal = FALSE)
+```
+
+
+
+
+## Now check for independence of those with their nose painted
+
+
+
+Get larger class of plots
+
+```{r}
+nose <- scorps[which(scorps$group=="nosePainted"), ]
+chisq.test(nose$Odor.location,nose$Arm.selected)
+fisher.test(nose$Odor.location,nose$Arm.selected)
+contTable <- xtabs(~ Odor.location + Arm.selected, data = nose)
+barchart(contTable,
+	auto.key = list(
+		space = "top",
+		title = "Arm.selected",
+		cex.title = 1,
+		columns = 1),
+	horizontal = FALSE,
+	xlab = "Odor Location")
+```
+
+
+
+
+#This shows that reaction to a marble is independent to Arm selected and also
+#reaction to a predator is independent of Arm selected if your nose got painted
+#comparing both is done with the Mantel_Haenszel test of common odds ratio across stratum
+
+```{r}
+conT <- xtabs(~ Arm.selected + Odor.location + group, data = scorps)
+counT=as.vector(conT)
+#now create the marble-nosePainted table
+MNP=array(counT[5:12],dim=c(2,2,2),dimnames = list( 
+Arm.selected = c("L", "R"),
+          Odor.location = c("L", "R"),
+          treatment = c("marble", "nosePainted")))
+mantelhaen.test(x=MNP,exact=TRUE)
+
+```
+So the CMH test confirms this
+
+##How about the untreated vs the footPainted groups
+
+```{r}
+UFP=array(c(counT[1:4],counT[13:16]),dim=c(2,2,2),dimnames = list( 
+Arm.selected = c("L", "R"),
+          Odor.location = c("L", "R"),
+          treatment = c("untreated", "footPainted")))
+mantelhaen.test(x=UFP,exact=TRUE)
+```
+#We see that there is a difference (which more than likely means you need more data) It is hard to explain why the ones with their opposite arm painted performed better!!
+
+
+
+
