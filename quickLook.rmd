@@ -87,7 +87,7 @@ Arm.selected = c("L", "R"),
           treatment = c("untreated", "footPainted")))
 mantelhaen.test(x=UFP,exact=TRUE)
 ```
-#We see that there is a difference (which more than likely means you need more data) It is hard to explain why the ones with their opposite arm painted performed better!!
+#We see by examining the confidence interval about the common odds ratio that both groups are behaving similiarly.
 
 
 
