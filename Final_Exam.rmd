@@ -20,9 +20,13 @@ scorps <- read.csv(file="Scorpion olfaction data Nov-2016.csv",header=TRUE)
 
 <!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer. You should note that the factor variable "group" basically divides the data into 4 different groups from which research questions could be formulated. Contact Zia Nisani for ideas.  You must turn in two reports, each will use this template. Work in teams on github if you want, make each major section (#) a separate git branch for git merge efficency at roll up time?!-->
 
+
+
 # Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method.!-->
+
+Scorpions we randomly selected to be assigned to two approximately equal sized groups. Let us call them the treated group and the raw group. There were approximately 50 scorpions in each group. The treated group was randomly divided into two subgroups  --- one called Nose and the other Foot.  The Nose group had some hairs (hypothesized to be oder detectors) painted with fingernail polish. The foot group had another part of their anatomy painted with the sam fingernail polish.
 
 #Results
 
@@ -34,6 +38,34 @@ scorps <- read.csv(file="Scorpion olfaction data Nov-2016.csv",header=TRUE)
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+```{r}
+marble <- scorps[which(scorps$group=="marble"), ]
+nose <- scorps[which(scorps$group=="nosePainted"), ]
+foot <- scorps[which(scorps$group=="footPainted"), ]
+regular <- scorps[which(scorps$group=="untreated"), ]
+xmarble <- marble$Odor.location==marble$Arm.selected
+xnose <- nose$Odor.location==nose$Arm.selected
+xfoot <- foot$Odor.location==foot$Arm.selected
+xregular <- regular$Odor.location==regular$Arm.selected
+```
+
+```{r}
+contTable <- xtabs(~ group + Odor.location + Arm.selected, data = scorps)
+barchart(contTable,
+	layout = c(1,2),
+	auto.key = list(
+		space = "top",
+		title = "Arm.selected",
+		cex.title = 1,
+		columns = 1),
+	horizontal = FALSE,
+	ylab = "Odor Location")
+```
+
+The plot shows that the arm selected for the marble and the nosepainted groups was about 50-50.
+It did not seem to matter where the odor source was located.  
+However for the other two groups the direction turned was predominantly the opposite of the odor source.
+
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
@@ -43,6 +75,56 @@ scorps <- read.csv(file="Scorpion olfaction data Nov-2016.csv",header=TRUE)
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
 
 
+We postulate that there is no significant difference between the proportions of the marble group and the nosepainted groups on the directions turned.
+
+```{r}
+z<-c(sum(xmarble),sum(xnose))
+minusz <- c(length(xmarble),length(xnose)) 
+
+prop.test(x=z,n=minusz)
+
+```
+Moreover in these two groups the direction turned (Arm.selected) is independent of the Odor.source
+For the marble subgroup
+
+```{r}
+chisq.test(marble$Odor.location,marble$Arm.selected)
+fisher.test(marble$Odor.location,marble$Arm.selected)
+```
+
+For the nosepainted subgroup
+
+```{r}
+chisq.test(nose$Odor.location,nose$Arm.selected)
+fisher.test(nose$Odor.location,nose$Arm.selected)
+```
+Now we consider the other two groups the footPainted and the regular scorpions.  We test to see if they have comperable proportions.
+
+```{r}
+zz<-c(sum(xregular),sum(xfoot))
+minuszz <- c(length(xregular),length(xfoot)) 
+
+prop.test(x=zz,n=minuszz)
+```
+The story here is that both groups are avoiding the predator scorpion the same proportion of the time
+
+We look at this another way using the CMH test for a common odds ratio,
+
+```{r}
+conT <- xtabs(~ Arm.selected + Odor.location + group, data = scorps)
+counT=as.vector(conT)
+UFP=array(c(counT[1:4],counT[13:16]),dim=c(2,2,2),dimnames = list( 
+Arm.selected = c("L", "R"),
+          Odor.location = c("L", "R"),
+          treatment = c("untreated", "footPainted")))
+mantelhaen.test(x=UFP,exact=TRUE)
+
+```
+
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+The conclusions are that the reaction of a regular scorpion to a marble and the reaction of a scorpion with its nose painted to a predator scorpion are the same. Painting his nose has disabled his detection of the predator.  
+
+However painting the scorpions foot has kept his ability to detect a predator intact. 

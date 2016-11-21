@@ -22,6 +22,7 @@ scorps <- read.csv(file="Scorpion olfaction data Nov-2016.csv",header=TRUE)
 
 ```{r}
 marble <- scorps[which(scorps$group=="marble"), ]
+x=marble$Odor.location==marble$Arm.selected
 chisq.test(marble$Odor.location,marble$Arm.selected)
 fisher.test(marble$Odor.location,marble$Arm.selected)
 contTable <- xtabs(~ Arm.selected + Odor.location, data = marble)
