@@ -96,30 +96,81 @@ mantelhaen.test(x=UFP,exact=TRUE)
 same <- scorps$Odor.location==scorps$Arm.selected
 scorps$same <- same
 z<-xtabs(~same +group,data=scorps)
-mylogit <- glm(same ~ group, data = scorps, family = "binomial")
-summary(mylogit)
+scorps$group <- relevel(scorps$group, ref="footPainted") # Use to change the baseline
+mylogit1 <- glm(same ~ group, data = scorps, family = "binomial")
+scorps$group <- relevel(scorps$group, ref="nosePainted") # Use to change the baseline
+mylogit2 <- glm(same ~ group, data = scorps, family = "binomial")
+scorps$group <- relevel(scorps$group, ref="marble") # Use to change the baseline
+mylogit3 <- glm(same ~ group, data = scorps, family = "binomial")
+scorps$group <- relevel(scorps$group, ref="untreated") # Use to change the baseline
+mylogit4 <- glm(same ~ group, data = scorps, family = "binomial")
+summary(mylogit1)
+summary(mylogit2)
+summary(mylogit3)
+summary(mylogit4)
 ```
 
 ### Making sense out of the results
 
-So logit=-2.0369 +2.1322*groupmarble + 2.3470*groupnosePainted + .6506*groupuntreated
+So looking at mylogit1 results we have  
+logit=-2.0369 +2.1322*groupmarble + 2.3470*groupnosePainted + .6506*groupuntreated
 
 if you are in the nosePainted group then groupmarble is zero as is groupuntreated
 
 so logit = -2.0369 + 2.347 = 0.3101 and exponentiating  exp(0.3101) we get the odds =  1.363561
 which corresponds to a prob = 1.363561/(1.363561 + 1) = .5769
 
-We can get a conf interval with the given standard error of .7301 adding and subtracting 2 times the standard error
-gives (.3101 - 2*.7301) = -1.1501  and (.3101 + 2*.7301)= 1.7703
-so odds are exp(-1.1501) = 0.3166051  to exp(1.7703) = 5.872
+We can ascribe the following meaning to the individual coefficients --- they are the odds ratios between the reference group and the group in question.
 
-somewhat tighter than the fisher exact test
-
-see if you can work out a 95% confidence interval for the odds given it was in the untreated group
-
-How about the footPainted group (trick question)
+for example in mylogi1 the baseline is the foot painted group so the odds ratio between the untreated and marble groups is `r summary(mylogit1)$coefficient[2]` with standard error `r  summary(mylogit1)$coefficient[2,2]`
+this gives a conf interval of the odds ratio  `r summary(mylogit1)$coefficient[2] - 1.96*summary(mylogit1)$coefficient[2,2]` to   `r summary(mylogit1)$coefficient[2] + 1.96*summary(mylogit1)$coefficient[2,2]`
 
 
+in sync with the CMH test
+
+# Try contrasting prop.test with logit model
 
 
+```{r}
+marnose <- scorps[which((scorps$group=="marble")|(scorps$group=="nosePainted")), ]
+ngroup <- factor(rep(NA,length(marnose$group)),levels=c("marble","nosePainted"))
+ngroup[marnose$group %in% c("marble")] <- "marble"
+ngroup[marnose$group %in% c("nosePainted")] <- "nosePainted"
+same <- marnose$Odor.location==marnose$Arm.selected
+marnose$same <- same
+marnose$ngroup <- ngroup
+z<-xtabs(~same +ngroup,data=marnose)
+marnose$ngroup <- relevel(marnose$ngroup, ref="nosePainted") # Use to change the baseline
+mylogit <- glm(same ~ ngroup, data = marnose, family = "binomial")
+summary(mylogit)
 
+```
+# now contrast with a prop.test
+```{r}
+xx=table(marnose$ngroup,marnose$same)
+outPTGC<- proptestGC(x=z[,2], n=(z[,1]+z[,2]))
+outPTGC
+```
+## The prop test shows zero comfortably in the confidence interval  
+if we anchor at .52 and let p1-p2 = lower.bound
+then the odds ratio would be p1/(p1-.338) `r .52/(.52 - .338)` at one end  
+and  p1/(p1+.338) `r .52/(.52 + .338)`
+
+# Recant comparing untreated against marble 
+## expecting independent with odds ratio of 1.
+
+in terms of odds ratios the prop test gave
+`r .52/(.52 + .338)` to `r .52/(.52 - .338)`
+
+the CHM test gave  
+95 percent confidence interval:
+ 0.4258014 to 5.6808653
+
+And results from logistic regression are   
+ this gives a conf interval of the odds ratio  `r summary(mylogit1)$coefficient[2] - 1.96*summary(mylogit1)$coefficient[2,2]` to   `r summary(mylogit1)$coefficient[2] + 1.96*summary(mylogit1)$coefficient[2,2]`  
+ 
+ 
+# Now compare the two "AWARE" groups the Untreated and footPainted
+
+And results from logistic regression comparing footPainted and untreated are here :    
+ this gives a conf interval of the odds ratio  `r summary(mylogit1)$coefficient[4] - 1.96*summary(mylogit1)$coefficient[4,2]` to   `r summary(mylogit1)$coefficient[4] + 1.96*summary(mylogit1)$coefficient[4,2]`  
