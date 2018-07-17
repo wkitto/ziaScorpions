@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 require(tigerstats)
+require(car)
 ```
 
 ## R Markdown
@@ -23,15 +24,23 @@ scorps <- read.csv(file="ScorpionsUntreatMarble.csv",header=TRUE)
 ```{r}
 chisqtestGC(~group+match, data=scorps)
 mytabl <- xtabs(~group+match, data=scorps)
+barchartGC(~group+match, data=scorps, type="percent")
 fisher.test(mytabl)
 ```
+The distribution shows that the "marble" group apparently is unaware of the threat at the end of the "Y" tube.  Half the time they turn toward it "yep" and the other half the turn away "nope". 
+
+The fisher test gives the odds-ratio as approx .22
+meaning the odds of an untreated scorpion turn toward danger are about a quarter of the odds of turning toward a marble.
+
 
 ```{r}
 mylogit1 <- glm(group ~ match, data = scorps, family = "binomial")
 summary(mylogit1)
-require(car)
-exp(.6466-1.5629)/(exp(.6466-1.5629)+1)
-```
+confint(mylogit1)
+exp(coef(mylogit1))
+exp(cbind(OR=coef(mylogit1),confint(mylogit1)))
 
+```
+We see the performance of logistic regression as a method to compute odds ratios results in similiar conclusions as fisher exact test with far greater applicability
 
 
