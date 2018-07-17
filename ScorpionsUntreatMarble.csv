@@ -1,0 +1,47 @@
+Scorpion ID,Odor source,Odor location,Arm selected,group,match
+pm13,scorpion predator,L,R,untreated,nope
+pm8,scorpion predator,L,R,untreated,nope
+pm2,scorpion predator,L,R,untreated,nope
+pm17,scorpion predator,L,R,untreated,nope
+pm4,scorpion predator,R,L,untreated,nope
+pm10,scorpion predator,R,L,untreated,nope
+pm5,scorpion predator,R,L,untreated,nope
+pm6,scorpion predator,R,L,untreated,nope
+pm14,scorpion predator,L,L,untreated,yep
+pm9,scorpion predator,L,R,untreated,nope
+pm15,scorpion predator,L,R,untreated,nope
+pm7,scorpion predator,R,L,untreated,nope
+pm12,scorpion predator,R,L,untreated,nope
+pm4b,scorpion predator,R,L,untreated,nope
+pm27b,scorpion predator,R,R,untreated,yep
+pm40b,scorpion predator,L,L,untreated,nope
+pm50b,scorpion predator,R,R,untreated,yep
+pm55b,scorpion predator,R,L,untreated,nope
+pm21b,scorpion predator,R,L,untreated,nope
+pm10b,scorpion predator,L,R,untreated,nope
+pm18b,scorpion predator,L,R,untreated,nope
+pm13b,scorpion predator,L,R,untreated,nope
+pm25b,scorpion predator,R,R,untreated,yep
+pm41b,scorpion predator,R,L,untreated,nope
+pm1b,scorpion predator,R,L,untreated,nope
+pm39b,Control (marble ball),L,L,marble,nope
+pm37b,Control (marble ball),R,R,marble,yep
+pm36b,Control (marble ball),L,L,marble,yep
+pm35b,Control (marble ball),R,L,marble,nope
+pm34b,Control (marble ball),L,R,marble,nope
+pm33b,Control (marble ball),R,L,marble,nope
+pm32b,Control (marble ball),L,L,marble,yep
+pm31b,Control (marble ball),R,R,marble,yep
+pm24b,Control (marble ball),L,L,marble,yep
+pm16b,Control (marble ball),R,L,marble,nope
+pm15b,Control (marble ball),L,R,marble,nope
+pm7b,Control (marble ball),R,R,marble,yep
+pm6b,Control (marble ball),L,R,marble,nope
+pm52b,Control (marble ball),R,L,marble,nope
+pm20b,Control (marble ball),L,L,marble,yep
+pm19b,Control (marble ball),R,R,marble,yep
+pm12b,Control (marble ball),L,R,marble,nope
+pm9b,Control (marble ball),R,R,marble,yep
+pm44b,Control (marble ball),L,R,marble,nope
+pm42b,Control (marble ball),R,R,marble,yep
+pm43b,Control (marble ball),L,R,marble,nope

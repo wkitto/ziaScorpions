@@ -43,6 +43,8 @@ marble <- scorps[which(scorps$group=="marble"), ]
 nose <- scorps[which(scorps$group=="nosePainted"), ]
 foot <- scorps[which(scorps$group=="footPainted"), ]
 regular <- scorps[which(scorps$group=="untreated"), ]
+sameDiff <- scorps[which(scorps$group=="untreated"|scorps$group=="marble"), ]
+
 xmarble <- marble$Odor.location==marble$Arm.selected
 xnose <- nose$Odor.location==nose$Arm.selected
 xfoot <- foot$Odor.location==foot$Arm.selected
@@ -122,21 +124,20 @@ mantelhaen.test(x=UFP,exact=TRUE)
 
 ```
 ```{r}
-same <- scorps$Odor.location==scorps$Arm.selected
-scorps$same <- same
-z<-xtabs(~same +group,data=scorps)
+ 
 scorps$group <- relevel(scorps$group, ref="footPainted") # Use to change the baseline
-mylogit1 <- glm(same ~ group, data = scorps, family = "binomial")
+mylogit1 <- glm(match ~ group, data = scorps, family = "binomial")
 scorps$group <- relevel(scorps$group, ref="nosePainted") # Use to change the baseline
-mylogit2 <- glm(same ~ group, data = scorps, family = "binomial")
+mylogit2 <- glm(match ~ group, data = scorps, family = "binomial")
 scorps$group <- relevel(scorps$group, ref="marble") # Use to change the baseline
-mylogit3 <- glm(same ~ group, data = scorps, family = "binomial")
+mylogit3 <- glm(match ~ group, data = scorps, family = "binomial")
 scorps$group <- relevel(scorps$group, ref="untreated") # Use to change the baseline
-mylogit4 <- glm(same ~ group, data = scorps, family = "binomial")
+mylogit4 <- glm(match ~ group, data = scorps, family = "binomial")
 summary(mylogit1)
 summary(mylogit2)
 summary(mylogit3)
 summary(mylogit4)
+exp(cbind(Odds_Ratio = coef(mylogit4),confint(mylogit4)))
 ```
 
 # Discussion and Conclusion
@@ -146,3 +147,17 @@ summary(mylogit4)
 The conclusions are that the reaction of a regular scorpion to a marble and the reaction of a scorpion with its nose painted to a predator scorpion are the same. Painting his nose has disabled his detection of the predator.  
 
 However painting the scorpions foot has kept his ability to detect a predator intact. 
+
+
+# Extra interpretive observations
+
+We collapse Odor.source and Arm.selected into a single variable
+called sameDiff. It has two values same or diff. we can then run fisher exact tests to guage the odds ratio between treatments --- this will be intrepreted in light of the logistic regression outputs.
+
+```{r}
+sameDiff<- droplevels(sameDiff) 
+sameDiff$state=as.factor(sameDiff$state)
+fisher.test(sameDiff$match,sameDiff$group)
+
+```
+

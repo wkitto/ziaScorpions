@@ -1,0 +1,37 @@
+---
+title: "logReg contrast fisher exact"
+author: "Dr K"
+date: "July 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(tigerstats)
+```
+
+## R Markdown
+
+
+```{r}
+scorps <- read.csv(file="ScorpionsUntreatMarble.csv",header=TRUE)
+```
+
+### check independence under marble
+
+
+```{r}
+chisqtestGC(~group+match, data=scorps)
+mytabl <- xtabs(~group+match, data=scorps)
+fisher.test(mytabl)
+```
+
+```{r}
+mylogit1 <- glm(group ~ match, data = scorps, family = "binomial")
+summary(mylogit1)
+require(car)
+exp(.6466-1.5629)/(exp(.6466-1.5629)+1)
+```
+
+
+
